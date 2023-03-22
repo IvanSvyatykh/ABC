@@ -1,50 +1,37 @@
 ﻿#include <iostream>
 using namespace std;
-void ShowByte(unsigned char* data )
-{
-	for (int i = 0; i < 8; i++)
-	{
-		if ((*data) & (0x80 >> i)) printf("1");
-		else  printf("0");
-	}
-	cout << " ";
-}
 
-void ShowFull(unsigned char* number, int NumOfBytes)
-{
-
-	cout << "Big Endian :";
-	for (int i = NumOfBytes - 1; i >= 0; i--)
-	{
-		ShowByte((number)+i);
-
-	}
-	cout << endl;
-	cout << "Little Endian :";
-	for (int i = 0; i < NumOfBytes; i++)
-	{
-		ShowByte((number)+i);
-
-	}
-}
 
 int main()
 {
-    int num;
-    cin >> num;
+	int a;
+	cin >> a;
+	__asm
+	{
+		mov eax, a;
+		push eax;
+		call fact;		
+		jmp exit1;
 
-    int numInt = num;
-    float numFloat = num;
-    double numDouble = num;
-		
-	cout << "int" << endl;
-	ShowFull((unsigned char*)&numInt , 4);
-	cout << endl;
-	
-	cout << "float" << endl;
-	ShowFull((unsigned char*)&numFloat, 4);
-	cout << endl;
+	fact:
+		mov eax, [esp + 4];
+		cmp eax, 1;
+		jne calc;
+		ret;
 
-	cout << "double" << endl;
-	ShowFull((unsigned char*)&numDouble, 8);
+	calc:
+		dec eax;
+		push eax
+		call fact;
+		add esp, 4			
+		mul[esp + 4];
+		ret;
+
+	exit1:
+		add esp, 4;
+		mov a, eax;
+	}
+
+	cout << a << std::endl;
+
 }
